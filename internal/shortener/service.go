@@ -30,7 +30,7 @@ func (s *Service) CreateLink(ctx context.Context, input CreateLinkInput) (Link, 
 	if err := s.repo.SetShortCode(ctx, link.ID, code); err != nil {
 		return Link{}, err
 	}
-	link.ShortCode = code
+	link.ShortCode = &code
 	return link, nil
 }
 

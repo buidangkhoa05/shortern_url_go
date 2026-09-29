@@ -14,7 +14,7 @@ func TestService_CreateLink(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateLink() error = %v", err)
 	}
-	if link.ShortCode == "" {
+	if link.ShortCode == nil {
 		t.Error("CreateLink() did not set ShortCode")
 	}
 	if link.LongURL != "https://example.com" {
@@ -31,7 +31,7 @@ func TestService_Resolve(t *testing.T) {
 	}
 
 	t.Run("found", func(t *testing.T) {
-		link, err := svc.Resolve(context.Background(), created.ShortCode)
+		link, err := svc.Resolve(context.Background(), *created.ShortCode)
 		if err != nil {
 			t.Fatalf("Resolve() error = %v", err)
 		}
@@ -53,7 +53,7 @@ func TestService_Resolve(t *testing.T) {
 		if err != nil {
 			t.Fatalf("setup CreateLink() error = %v", err)
 		}
-		_, err = svc.Resolve(context.Background(), expired.ShortCode)
+		_, err = svc.Resolve(context.Background(), *expired.ShortCode)
 		if !errors.Is(err, ErrExpired) {
 			t.Errorf("Resolve() error = %v, want ErrExpired", err)
 		}
@@ -75,7 +75,7 @@ func TestService_GetStats(t *testing.T) {
 		t.Fatalf("RecordClick() error = %v", err)
 	}
 
-	stats, err := svc.GetStats(context.Background(), created.ShortCode)
+	stats, err := svc.GetStats(context.Background(), *created.ShortCode)
 	if err != nil {
 		t.Fatalf("GetStats() error = %v", err)
 	}
