@@ -1,10 +1,14 @@
 package config
 
-import "testing"
+import (
+	"os"
+	"testing"
+)
 
 func TestLoad(t *testing.T) {
 	t.Setenv("DATABASE_URL", "postgres://user:pass@localhost:5432/db")
 	t.Setenv("PORT", "9090")
+	t.Setenv("BASE_URL", "http://localhost:8080")
 
 	cfg, err := Load()
 	if err != nil {
@@ -22,6 +26,8 @@ func TestLoad(t *testing.T) {
 }
 
 func TestLoad_MissingRequired(t *testing.T) {
+	t.Setenv("DATABASE_URL", "")
+	os.Unsetenv("DATABASE_URL")
 	if _, err := Load(); err == nil {
 		t.Fatal("Load() expected error when DATABASE_URL is unset, got nil")
 	}
