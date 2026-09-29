@@ -30,11 +30,12 @@ func TestPostgresRepository_CreateAndFetch(t *testing.T) {
 		t.Fatalf("CreateLink() error = %v", err)
 	}
 
-	if err := repo.SetShortCode(ctx, link.ID, "abc123"); err != nil {
+	shortCode := EncodeBase62(link.ID)
+	if err := repo.SetShortCode(ctx, link.ID, shortCode); err != nil {
 		t.Fatalf("SetShortCode() error = %v", err)
 	}
 
-	fetched, err := repo.GetByShortCode(ctx, "abc123")
+	fetched, err := repo.GetByShortCode(ctx, shortCode)
 	if err != nil {
 		t.Fatalf("GetByShortCode() error = %v", err)
 	}

@@ -32,7 +32,7 @@ func (f *fakeRepository) SetShortCode(ctx context.Context, id int64, shortCode s
 	if !ok {
 		return ErrNotFound
 	}
-	link.ShortCode = &shortCode
+	link.ShortCode = shortCode
 	f.byID[id] = link
 	f.codeToID[shortCode] = id
 	return nil

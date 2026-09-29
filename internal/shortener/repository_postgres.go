@@ -19,13 +19,18 @@ func NewPostgresRepository(pool *pgxpool.Pool) *PostgresRepository {
 
 func (r *PostgresRepository) CreateLink(ctx context.Context, longURL string, expiresAt *time.Time) (Link, error) {
 	var link Link
+	// short_code is NULL at insert time; it will be populated by a separate SetShortCode call.
+	var shortCode *string
 	err := r.pool.QueryRow(ctx,
 		`INSERT INTO links (long_url, expires_at) VALUES ($1, $2)
 		 RETURNING id, long_url, short_code, expires_at, created_at`,
 		longURL, expiresAt,
-	).Scan(&link.ID, &link.LongURL, &link.ShortCode, &link.ExpiresAt, &link.CreatedAt)
+	).Scan(&link.ID, &link.LongURL, &shortCode, &link.ExpiresAt, &link.CreatedAt)
 	if err != nil {
 		return Link{}, err
+	}
+	if shortCode != nil {
+		link.ShortCode = *shortCode
 	}
 	return link, nil
 }
